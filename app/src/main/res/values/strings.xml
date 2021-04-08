@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">GithubListApplication</string>
+    <string name="cari_user">Find User</string>
+    <string name="github_name">github_name</string>
+    <string name="move_to_detail">See</string>
+    <string name="github_username">username</string>
+    <string name="name_received">name_received</string>
+    <string name="username_received">username_received</string>
+    <string name="follower_received">follower_received</string>
+    <string name="following_received">following_received</string>
+    <string name="company_received">company_received</string>
+    <string name="location_received">location_received</string>
+    <string name="repository_received">repository_received</string>
+    <string name="github_list">Github List</string>
+    <string name="share">Share</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="content_tab_followers">hello followers</string>
+    <string name="content_tab_following">hello following</string>
+    <string name="tab_text_1">Following</string>
+    <string name="tab_text_2">Followers</string>
+    <string name="change_language_settings">change language</string>
+    <string name="search">search</string>
+    <string name="search_hint">Find user...</string>
+    <string name="intro">Find github user here!</string>
+</resources>
