@@ -1,7 +1,6 @@
 package com.dicoding.githublistapplication
 
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.StringRes
@@ -13,7 +12,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
+class DetailUserActivity : AppCompatActivity(){
     companion object {
         const val EXTRA_USER = "extra_user"
         @StringRes
@@ -30,17 +29,15 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         val tvFollowingReceived: TextView = findViewById(R.id.tv_following_received)
         val tvFollowerReceived: TextView = findViewById(R.id.tv_follower_received)
         val tvAvatarReceived: ImageView = findViewById(R.id.img_photo_received)
-        val user = intent.getParcelableExtra<UserDetail>(EXTRA_USER) as UserDetail
+        val user = intent?.getParcelableExtra<UserDetail>(EXTRA_USER) as UserDetail
         Glide.with(this).load(user.avatar_url)
             .apply(RequestOptions().override(300, 300))
             .into(tvAvatarReceived)
-        tvNameReceived.text = "${user.name}"
+        tvNameReceived.text = user.name
         tvFollowerReceived.text = "Followers: ${user.followers}"
         tvFollowingReceived.text = "Following: ${user.following}"
         supportActionBar?.title = user.login
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-
         val sectionsPagerAdapter = SectionPagerAdapter(this, user)
         val viewPager: ViewPager2 = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
@@ -57,7 +54,4 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    override fun onClick(v: View?) {
-
-    }
 }

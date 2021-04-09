@@ -5,13 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,45 +22,39 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-
-
     private lateinit var rvUsers: RecyclerView
-    private lateinit var edtsearch: EditText
-
+    private lateinit var progressBar: ProgressBar
     private var list: ArrayList<UserDetail> = arrayListOf()
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
     companion object {
         val BASE_URL = "https://api.github.com/"
 
     }
-    fun getDetail(user:UserDetail){
-        var progressBar: ProgressBar = findViewById(R.id.progress_bar)
+    private fun getDetail(user:UserDetail){
 
-        progressBar.setVisibility(View.VISIBLE)
-        rvUsers.setVisibility(View.GONE)
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        progressBar?.visibility = View.VISIBLE
+        rvUsers?.visibility = View.GONE
         val service = retrofit.create(UserService::class.java)
-        val call = service.getDetailUserData(user.login!!)
-
-
+        val call = service.getDetailUserData(user.login ?: "")
         call.enqueue(object : Callback<UserDetail> {
             override fun onResponse(call: Call<UserDetail>, response: Response<UserDetail>) {
                 if (response.code() == 200) {
-                    val userResponse = response.body()!!
+                    val userResponse = response.body()
                     user.followers= userResponse.followers
                     user.following = userResponse.following
                     user.name = userResponse.name
-                    progressBar.setVisibility(View.GONE)
-                    rvUsers.setVisibility(View.VISIBLE)
+                    progressBar?.visibility = View.GONE
+                    rvUsers?.visibility = View.VISIBLE
                     showSelectedProject(user)
                 }
             }
 
             override fun onFailure(call: Call<UserDetail>, t: Throwable?) {
-                progressBar.setVisibility(View.GONE)
-                rvUsers.setVisibility(View.VISIBLE)
+                progressBar?.visibility = View.GONE
+                rvUsers?.visibility = View.VISIBLE
                 Toast.makeText(this@MainActivity
                     , "Failed to fetch data",
                     Toast.LENGTH_LONG
@@ -73,14 +63,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    fun searchUser(username:String){
-       var progressBar: ProgressBar = findViewById(R.id.progress_bar)
-        progressBar.setVisibility(View.VISIBLE)
-        rvUsers.setVisibility(View.GONE)
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun searchUser(username:String){
+
+        progressBar?.visibility = View.VISIBLE
+        rvUsers?.visibility = View.GONE
         val service = retrofit.create(UserService::class.java)
         val call = service.getSearchUserData(username)
 
@@ -88,7 +74,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         call.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.code() == 200) {
-                   val userResponse = response.body()!!
+                   val userResponse = response.body()
                     val listOfUser = arrayListOf<UserDetail>()
                     for (i in userResponse.items.indices) {
                         val user = UserDetail()
@@ -102,17 +88,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         listOfUser.add(user)
                     }
                     list = listOfUser
-                    progressBar.setVisibility(View.GONE)
+                    progressBar?.visibility = View.GONE
+                    rvUsers?.visibility = View.VISIBLE
                     showRecyclerList(list)
 
-                    rvUsers.setVisibility(View.VISIBLE)
 
                 }
             }
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable?) {
-                progressBar.setVisibility(View.GONE)
-                rvUsers.setVisibility(View.VISIBLE)
+                progressBar?.visibility = View.GONE
+                rvUsers?.visibility = View.VISIBLE
                 Toast.makeText(this@MainActivity
                    , "Failed to fetch data",
                     Toast.LENGTH_LONG
@@ -128,8 +114,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             rvUsers = findViewById(R.id.rv_users)
             rvUsers.setHasFixedSize(true)
             supportActionBar?.title = "Github"
-            var progressBar: ProgressBar = findViewById(R.id.progress_bar)
-            progressBar.setVisibility(View.GONE)
+          progressBar = findViewById(R.id.progress_bar)
+            progressBar?.visibility = View.GONE
             showRecyclerList(list)
 
 
