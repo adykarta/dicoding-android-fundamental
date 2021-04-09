@@ -7,15 +7,14 @@ import android.os.Handler
 import com.dicoding.githublistapplication.R
 
 class SplashActivity : AppCompatActivity() {
-    private val SPLASH_TIME_OUT:Long = 3000 // 1 sec
+    private val splashTimeOut:Long = 3000 // 1 sec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
-        Handler().postDelayed({
+        Handler(mainLooper).postDelayed({
             startActivity(Intent(this,MainActivity::class.java))
             finish()
-        }, SPLASH_TIME_OUT)
+        }, splashTimeOut)
     }
 
 }

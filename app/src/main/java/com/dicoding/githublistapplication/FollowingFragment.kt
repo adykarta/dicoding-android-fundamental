@@ -18,39 +18,27 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FollowingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FollowingFragment(username: String) : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var username: String? = username
+    private var username: String = username
     private var rvUsers: RecyclerView? = null
-    private lateinit var progressBar: ProgressBar
+    private var progressBar: ProgressBar? = null
     private lateinit var ctx: Context
     private var list: ArrayList<UserDetail> = arrayListOf()
+    private  val retrofit = Retrofit.Builder()
+        .baseUrl(MainActivity.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-    fun getDetail(user:UserDetail){
-
-
-        progressBar.setVisibility(View.VISIBLE)
-        rvUsers?.setVisibility(View.GONE)
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MainActivity.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun getDetail(user:UserDetail){
+        progressBar?.visibility = View.VISIBLE
+        rvUsers?.visibility = View.GONE
         val service = retrofit.create(UserService::class.java)
-        val call = service.getDetailUserData(user.login!!)
-
-
+        val call = service.getDetailUserData(user.login ?: "")
         call.enqueue(object : Callback<UserDetail> {
             override fun onResponse(call: Call<UserDetail>, response: Response<UserDetail>) {
                 if (response.code() == 200) {
@@ -58,18 +46,14 @@ class FollowingFragment(username: String) : Fragment() {
                     user.followers= userResponse.followers
                     user.following = userResponse.following
                     user.name = userResponse.name
-
-                    progressBar.setVisibility(View.GONE)
-                    rvUsers?.setVisibility(View.VISIBLE)
+                    progressBar?.visibility = View.GONE
+                    rvUsers?.visibility = View.VISIBLE
                     showSelectedProject(user)
-
-
                 }
             }
-
             override fun onFailure(call: Call<UserDetail>, t: Throwable?) {
-                progressBar.setVisibility(View.GONE)
-                rvUsers?.setVisibility(View.VISIBLE)
+                progressBar?.visibility = View.GONE
+                rvUsers?.visibility = View.VISIBLE
                 Toast.makeText(ctx
                     , "Failed to fetch data",
                     Toast.LENGTH_LONG
@@ -77,21 +61,15 @@ class FollowingFragment(username: String) : Fragment() {
             }
         })
     }
-    fun getListFollowingUser(username: String){
-        rvUsers?.setVisibility(View.GONE)
-        val retrofit = Retrofit.Builder()
-            .baseUrl(MainActivity.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun getListFollowingUser(username: String){
+        progressBar?.visibility = View.VISIBLE
+        rvUsers?.visibility = View.GONE
         val service = retrofit.create(UserService::class.java)
         val call = service.getFollowing(username)
-
-
         call.enqueue(object : Callback<ArrayList<UserDetail>> {
             override fun onResponse(call: Call<ArrayList<UserDetail>>, response: Response<ArrayList<UserDetail>>) {
                 if (response.code() == 200) {
-                    val userResponse = response.body()!!
-
+                    val userResponse = response.body()
                     val listOfUser = arrayListOf<UserDetail>()
                     for (i in userResponse) {
                         val user = UserDetail()
@@ -105,17 +83,15 @@ class FollowingFragment(username: String) : Fragment() {
                         listOfUser.add(user)
                     }
                     list = listOfUser
-
-                    progressBar.setVisibility(View.GONE)
+                    progressBar?.visibility = View.GONE
+                    rvUsers?.visibility = View.VISIBLE
                     showRecyclerList(list)
-                    rvUsers?.setVisibility(View.VISIBLE)
 
                 }
             }
-
             override fun onFailure(call: Call<ArrayList<UserDetail>>, t: Throwable?) {
-                progressBar.setVisibility(View.GONE)
-                rvUsers?.setVisibility(View.VISIBLE)
+                progressBar?.visibility = View.GONE
+                rvUsers?.visibility = View.VISIBLE
                 Toast.makeText(ctx
                     , "Failed to fetch data",
                     Toast.LENGTH_LONG
@@ -135,9 +111,11 @@ class FollowingFragment(username: String) : Fragment() {
     override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
         rvUsers = itemView.findViewById(R.id.rv_users_following)
         rvUsers?.setHasFixedSize(true)
+        progressBar = itemView.findViewById<ProgressBar>(R.id.progress_bar_following)
+        progressBar?.visibility = View.VISIBLE
+        rvUsers?.visibility = View.GONE
         super.onViewCreated(itemView, savedInstanceState)
         showRecyclerList(list)
-
     }
 
     private fun showSelectedProject(user: UserDetail) {
@@ -151,20 +129,13 @@ class FollowingFragment(username: String) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var view: View = inflater.inflate(R.layout.fragment_following, container, false)
-        progressBar = view.findViewById<ProgressBar>(R.id.progress_bar_following)
-        rvUsers = view.findViewById(R.id.rv_users_following)
-        rvUsers?.setHasFixedSize(true)
-        rvUsers?.setVisibility(View.GONE)
-        progressBar.setVisibility(View.VISIBLE)
         ctx = this.context!!
-        getListFollowingUser(username = username!!)
-
+        getListFollowingUser(username = username)
         // Inflate the layout for this fragment
         return view
 
     }
     private fun showRecyclerList(list: ArrayList<UserDetail>) {
-
         rvUsers?.layoutManager = LinearLayoutManager(ctx)
         val listUserAdapter = UserListAdapter(list)
         rvUsers?.adapter = listUserAdapter
@@ -177,15 +148,6 @@ class FollowingFragment(username: String) : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FollowersFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             FollowersFragment("").apply {

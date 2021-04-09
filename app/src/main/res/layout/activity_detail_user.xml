@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:gravity="center"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:text="@string/name_received"
         android:textColor="@android:color/white"
         android:textSize="30sp"
@@ -50,9 +50,8 @@
             android:id="@+id/tv_following_received"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="22dp"
+            android:layout_marginStart="22dp"
             android:layout_toRightOf="@+id/tv_follower_received"
-
             android:text="@string/following_received"
             android:textColor="@android:color/white"
             android:textSize="16sp" />

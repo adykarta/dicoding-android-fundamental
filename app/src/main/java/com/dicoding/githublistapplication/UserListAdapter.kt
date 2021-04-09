@@ -13,7 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 
 
 
-class UserListAdapter(val listUser: ArrayList<UserDetail>) : RecyclerView.Adapter<UserListAdapter.ListViewHolder>() {
+class UserListAdapter(private val listUser: ArrayList<UserDetail>) : RecyclerView.Adapter<UserListAdapter.ListViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
@@ -32,10 +32,7 @@ class UserListAdapter(val listUser: ArrayList<UserDetail>) : RecyclerView.Adapte
 
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-
         val user = listUser[position]
-
-
         Glide.with(holder.itemView.context).load(user.avatar_url)
             .apply(RequestOptions().override(200, 200))
             .into(holder.imgPhoto)
