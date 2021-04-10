@@ -10,6 +10,8 @@ class UserResponse {
 
 @Parcelize
 class UserDetail(
+    @SerializedName("id")
+    var id: Int? = 0,
     @SerializedName("name")
     var name: String? = null,
     @SerializedName("followers_url")
@@ -23,5 +25,8 @@ class UserDetail(
     @SerializedName("avatar_url")
     var avatar_url: String? = null,
     @SerializedName("login")
-    var login: String? = null
+    var login: String? = null,
+    @SerializedName("favorite")
+    var favorite: Boolean = false
+
 ): Parcelable

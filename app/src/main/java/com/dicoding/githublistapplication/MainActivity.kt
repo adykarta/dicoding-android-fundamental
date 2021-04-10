@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,7 +22,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity() {
     private lateinit var rvUsers: RecyclerView
     private lateinit var progressBar: ProgressBar
     private var list: ArrayList<UserDetail> = arrayListOf()
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val call = service.getDetailUserData(user.login ?: "")
         call.enqueue(object : Callback<UserDetail> {
             override fun onResponse(call: Call<UserDetail>, response: Response<UserDetail>) {
+
                 if (response.code() == 200) {
                     val userResponse = response.body()
                     user.followers= userResponse.followers
@@ -73,6 +75,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         call.enqueue(object : Callback<UserResponse> {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+
                 if (response.code() == 200) {
                    val userResponse = response.body()
                     val listOfUser = arrayListOf<UserDetail>()
@@ -91,8 +94,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     progressBar?.visibility = View.GONE
                     rvUsers?.visibility = View.VISIBLE
                     showRecyclerList(list)
-
-
                 }
             }
 
@@ -106,15 +107,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
         })
     }
-
-
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_main)
             rvUsers = findViewById(R.id.rv_users)
             rvUsers.setHasFixedSize(true)
             supportActionBar?.title = "Github"
-          progressBar = findViewById(R.id.progress_bar)
+            progressBar = findViewById(R.id.progress_bar)
             progressBar?.visibility = View.GONE
             showRecyclerList(list)
 
@@ -124,8 +123,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val moveWithDataIntent = Intent(this@MainActivity, DetailUserActivity::class.java)
         moveWithDataIntent.putExtra(DetailUserActivity.EXTRA_USER,user)
         startActivity(moveWithDataIntent)
-
     }
+
     private fun showRecyclerList(list: ArrayList<UserDetail>) {
         rvUsers.layoutManager = LinearLayoutManager(this)
         val listUserAdapter = UserListAdapter(list)
@@ -160,12 +159,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
             startActivity(mIntent)
         }
+        else if(item.itemId == R.id.favorite_menu){
+            val moveIntent = Intent(this@MainActivity, FavoriteActivity::class.java)
+            startActivity(moveIntent)
+
+        }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClick(v: View?) {
-
-    }
 
 
 }

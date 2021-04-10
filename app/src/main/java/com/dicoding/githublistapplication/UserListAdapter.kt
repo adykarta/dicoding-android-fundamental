@@ -6,16 +6,39 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-
-
 class UserListAdapter(private val listUser: ArrayList<UserDetail>) : RecyclerView.Adapter<UserListAdapter.ListViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
+
+    var listFav = ArrayList<UserDetail>()
+        set(listNotes) {
+            if (listNotes.size > 0) {
+                this.listUser.clear()
+            }
+            this.listUser.addAll(listFav)
+
+            notifyDataSetChanged()
+        }
+
+    fun addItem(user: UserDetail) {
+        this.listFav.add(user)
+        notifyItemInserted(this.listFav.size - 1)
+    }
+
+    fun updateItem(position: Int, user: UserDetail) {
+        this.listFav[position] = user
+        notifyItemChanged(position, user)
+    }
+
+    fun removeItem(position: Int) {
+        this.listFav.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, this.listFav.size)
+    }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
@@ -27,8 +50,6 @@ class UserListAdapter(private val listUser: ArrayList<UserDetail>) : RecyclerVie
         val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_row_user, viewGroup, false)
         return ListViewHolder(view)
     }
-
-
 
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
