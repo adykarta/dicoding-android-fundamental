@@ -70,8 +70,6 @@ class FavoriteActivity : AppCompatActivity() {
     private fun loadFavoriteAsync() {
         GlobalScope.launch(Dispatchers.Main) {
             binding?.progressBarFavorite?.visibility = View.VISIBLE
-            val favoriteHelper = FavoriteHelper.getInstance(applicationContext)
-            favoriteHelper.open()
             val deferredNotes = async(Dispatchers.IO) {
                 val cursor = contentResolver.query(DatabaseContract.FavoriteColumns.CONTENT_URI, null, null, null, null)
                 MappingHelper.mapCursorToArrayList(
