@@ -1,4 +1,4 @@
-package com.dicoding.githublistapplication
+package com.dicoding.githublistapplication.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.dicoding.githublistapplication.R
+import com.dicoding.githublistapplication.model.User
 
-class UserListAdapter(private val listUser: ArrayList<UserDetail>) : RecyclerView.Adapter<UserListAdapter.ListViewHolder>() {
+class UserListAdapter(private val listUser: ArrayList<User>) : RecyclerView.Adapter<UserListAdapter.ListViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
-    var listFav = ArrayList<UserDetail>()
+    var listFav = ArrayList<User>()
         set(listNotes) {
             if (listNotes.size > 0) {
                 this.listUser.clear()
@@ -24,12 +26,12 @@ class UserListAdapter(private val listUser: ArrayList<UserDetail>) : RecyclerVie
             notifyDataSetChanged()
         }
 
-    fun addItem(user: UserDetail) {
+    fun addItem(user: User) {
         this.listFav.add(user)
         notifyItemInserted(this.listFav.size - 1)
     }
 
-    fun updateItem(position: Int, user: UserDetail) {
+    fun updateItem(position: Int, user: User) {
         this.listFav[position] = user
         notifyItemChanged(position, user)
     }
@@ -44,7 +46,7 @@ class UserListAdapter(private val listUser: ArrayList<UserDetail>) : RecyclerVie
         this.onItemClickCallback = onItemClickCallback
     }
     interface OnItemClickCallback {
-        fun onItemClicked(data: UserDetail)
+        fun onItemClicked(data: User)
     }
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
         val view: View = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_row_user, viewGroup, false)

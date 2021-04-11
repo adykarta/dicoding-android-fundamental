@@ -1,4 +1,4 @@
-package com.dicoding.githublistapplication
+package com.dicoding.githublistapplication.ui.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +12,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         Handler(mainLooper).postDelayed({
-            startActivity(Intent(this,MainActivity::class.java))
+            startActivity(Intent(this,
+                MainActivity::class.java))
             finish()
         }, splashTimeOut)
     }

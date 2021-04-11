@@ -10,11 +10,12 @@ import com.dicoding.githublistapplication.db.DatabaseContract.FavoriteColumns.Co
 import com.dicoding.githublistapplication.db.DatabaseContract.FavoriteColumns.Companion.LOGIN
 import com.dicoding.githublistapplication.db.DatabaseContract.FavoriteColumns.Companion.NAME
 import com.dicoding.githublistapplication.db.DatabaseContract.FavoriteColumns.Companion._ID
+import com.dicoding.githublistapplication.model.User
 
 object MappingHelper {
 
-    fun mapCursorToArrayList(notesCursor: Cursor?): ArrayList<UserDetail> {
-        val notesList = ArrayList<UserDetail>()
+    fun mapCursorToArrayList(notesCursor: Cursor?): ArrayList<User> {
+        val notesList = ArrayList<User>()
         notesCursor?.apply {
             while (moveToNext()) {
                 val id = getInt(getColumnIndexOrThrow(_ID))
@@ -26,13 +27,25 @@ object MappingHelper {
                 val login = getString(getColumnIndexOrThrow(LOGIN))
                 val avatar_url = getString(getColumnIndexOrThrow(AVATAR_URL))
                 val favorite = getString(getColumnIndexOrThrow(FAVORITE))
-                notesList.add(UserDetail(id, name, followers_url, following_url,followers, following, avatar_url, login, favorite = favorite=="ya"))
+                notesList.add(
+                    User(
+                        id,
+                        name,
+                        followers_url,
+                        following_url,
+                        followers,
+                        following,
+                        avatar_url,
+                        login,
+                        favorite = favorite == "ya"
+                    )
+                )
             }
         }
         return notesList
     }
-    fun mapCursorToUserObject(notesCursor: Cursor?): UserDetail{
-        var user = UserDetail()
+    fun mapCursorToUserObject(notesCursor: Cursor?): User {
+        var user = User()
         notesCursor?.apply {
             while (moveToNext()) {
                 val id = getInt(getColumnIndexOrThrow(_ID))
@@ -44,7 +57,17 @@ object MappingHelper {
                 val login = getString(getColumnIndexOrThrow(LOGIN))
                 val avatar_url = getString(getColumnIndexOrThrow(AVATAR_URL))
                 val favorite = getString(getColumnIndexOrThrow(FAVORITE))
-                user = UserDetail(id, name, followers_url, following_url,followers, following, avatar_url, login, favorite = favorite=="ya")
+                user = User(
+                    id,
+                    name,
+                    followers_url,
+                    following_url,
+                    followers,
+                    following,
+                    avatar_url,
+                    login,
+                    favorite = favorite == "ya"
+                )
             }
         }
         return user

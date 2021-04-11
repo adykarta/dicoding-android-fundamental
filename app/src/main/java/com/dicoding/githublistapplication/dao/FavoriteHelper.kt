@@ -1,4 +1,4 @@
-package com.dicoding.githublistapplication.favorite
+package com.dicoding.githublistapplication.dao
 
 import android.content.ContentValues
 import android.content.Context
@@ -18,8 +18,12 @@ class FavoriteHelper(context: Context) {
         private var INSTANCE: FavoriteHelper? = null
         private lateinit var database: SQLiteDatabase
         fun getInstance(context: Context): FavoriteHelper =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?:FavoriteHelper(context)
+            INSTANCE
+                ?: synchronized(this) {
+                INSTANCE
+                    ?: FavoriteHelper(
+                        context
+                    )
             }
     }
     init {
@@ -47,10 +51,12 @@ class FavoriteHelper(context: Context) {
             "$_ID ASC")
     }
     fun insert(values: ContentValues?): Long {
-        return database.insert(DATABASE_TABLE, null, values)
+        return database.insert(
+            DATABASE_TABLE, null, values)
     }
     fun deleteById(id: String): Int {
-        return database.delete(DATABASE_TABLE, "$_ID = '$id'", null)
+        return database.delete(
+            DATABASE_TABLE, "$_ID = '$id'", null)
     }
     fun queryByName(name: String): Cursor {
         return database.query(

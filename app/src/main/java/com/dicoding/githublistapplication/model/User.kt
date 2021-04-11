@@ -1,15 +1,15 @@
-package com.dicoding.githublistapplication
+package com.dicoding.githublistapplication.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-class UserResponse {
+class UserList {
     @SerializedName("items")
-    var items = ArrayList<UserDetail>()
+    var items = ArrayList<User>()
 }
 
 @Parcelize
-class UserDetail(
+class User(
     @SerializedName("id")
     var id: Int? = 0,
     @SerializedName("name")

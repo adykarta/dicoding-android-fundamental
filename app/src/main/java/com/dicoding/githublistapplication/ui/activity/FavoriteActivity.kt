@@ -1,15 +1,18 @@
-package com.dicoding.githublistapplication
+package com.dicoding.githublistapplication.ui.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.dicoding.githublistapplication.favorite.FavoriteHelper
+import com.dicoding.githublistapplication.*
+import com.dicoding.githublistapplication.api.UserService
+import com.dicoding.githublistapplication.dao.FavoriteHelper
+import com.dicoding.githublistapplication.databinding.ActivityFavoriteBinding
+import com.dicoding.githublistapplication.model.User
+import com.dicoding.githublistapplication.ui.adapter.UserListAdapter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -22,9 +25,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class FavoriteActivity : AppCompatActivity() {
-    private lateinit var rvUsers: RecyclerView
-    private lateinit var progressBar: ProgressBar
-    private var list: ArrayList<UserDetail> = arrayListOf()
+    private var binding: ActivityFavoriteBinding? = null
+    private var list: ArrayList<User> = arrayListOf()
     private val retrofit = Retrofit.Builder()
         .baseUrl(MainActivity.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -33,14 +35,14 @@ class FavoriteActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_STATE = "EXTRA_STATE"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_favorite)
-        rvUsers = findViewById(R.id.rv_users_favorite)
-        rvUsers.setHasFixedSize(true)
+        binding = ActivityFavoriteBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        binding?.rvUsersFavorite?.setHasFixedSize(true)
         supportActionBar?.title = "Favorite User"
-        progressBar = findViewById(R.id.progress_bar_favorite)
-        progressBar?.visibility = View.GONE
+        binding?.progressBarFavorite?.visibility = View.GONE
         //set back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -49,7 +51,9 @@ class FavoriteActivity : AppCompatActivity() {
             // proses ambil data
             loadFavoriteAsync()
         } else {
-            val listData = savedInstanceState.getParcelableArrayList<UserDetail>(EXTRA_STATE)
+            val listData = savedInstanceState.getParcelableArrayList<User>(
+                EXTRA_STATE
+            )
             if (listData != null) {
                 showRecyclerList(listData)
             }
@@ -64,15 +68,17 @@ class FavoriteActivity : AppCompatActivity() {
 
     private fun loadFavoriteAsync() {
         GlobalScope.launch(Dispatchers.Main) {
-            progressBar.visibility = View.VISIBLE
+            binding?.progressBarFavorite?.visibility = View.VISIBLE
             val favoriteHelper = FavoriteHelper.getInstance(applicationContext)
             favoriteHelper.open()
             val deferredNotes = async(Dispatchers.IO) {
                 val cursor = favoriteHelper.queryAll()
-                MappingHelper.mapCursorToArrayList(cursor)
+                MappingHelper.mapCursorToArrayList(
+                    cursor
+                )
             }
 //            favoriteHelper.close()
-            progressBar.visibility = View.GONE
+            binding?.progressBarFavorite?.visibility = View.GONE
             val favorites = deferredNotes.await()
             if (favorites.size > 0) {
                 showRecyclerList(favorites)
@@ -84,28 +90,28 @@ class FavoriteActivity : AppCompatActivity() {
     }
 
 
-    private fun getDetail(user:UserDetail){
+    private fun getDetail(user: User){
 
-        progressBar?.visibility = View.VISIBLE
-        rvUsers?.visibility = View.GONE
+        binding?.progressBarFavorite?.visibility = View.VISIBLE
+        binding?.rvUsersFavorite?.visibility = View.GONE
         val service = retrofit.create(UserService::class.java)
         val call = service.getDetailUserData(user.login ?: "")
-        call.enqueue(object : Callback<UserDetail> {
-            override fun onResponse(call: Call<UserDetail>, response: Response<UserDetail>) {
+        call.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.code() == 200) {
-                    val userResponse = response.body()
-                    user.followers= userResponse.followers
-                    user.following = userResponse.following
-                    user.name = userResponse.name
-                    progressBar?.visibility = View.GONE
-                    rvUsers?.visibility = View.VISIBLE
+                    val UserList = response.body()
+                    user.followers= UserList.followers
+                    user.following = UserList.following
+                    user.name = UserList.name
+                    binding?.progressBarFavorite?.visibility = View.GONE
+                    binding?.rvUsersFavorite?.visibility = View.VISIBLE
                     showSelectedProject(user)
                 }
             }
 
-            override fun onFailure(call: Call<UserDetail>, t: Throwable?) {
-                progressBar?.visibility = View.GONE
-                rvUsers?.visibility = View.VISIBLE
+            override fun onFailure(call: Call<User>, t: Throwable?) {
+                binding?.progressBarFavorite?.visibility = View.GONE
+                binding?.rvUsersFavorite?.visibility = View.VISIBLE
                 Toast.makeText(this@FavoriteActivity
                     , "Failed to fetch data",
                     Toast.LENGTH_LONG
@@ -114,19 +120,22 @@ class FavoriteActivity : AppCompatActivity() {
         })
     }
 
-    private fun showSelectedProject(user: UserDetail) {
+    private fun showSelectedProject(user: User) {
         val moveWithDataIntent = Intent(this@FavoriteActivity, DetailUserActivity::class.java)
         moveWithDataIntent.putExtra(DetailUserActivity.EXTRA_USER,user)
         startActivity(moveWithDataIntent)
     }
 
-    private fun showRecyclerList(listUser: ArrayList<UserDetail>) {
+    private fun showRecyclerList(listUser: ArrayList<User>) {
         list = listUser
-        rvUsers.layoutManager = LinearLayoutManager(this)
-        val listUserAdapter = UserListAdapter(listUser)
-        rvUsers.adapter = listUserAdapter
+        binding?.rvUsersFavorite?.layoutManager = LinearLayoutManager(this)
+        val listUserAdapter =
+            UserListAdapter(
+                listUser
+            )
+        binding?.rvUsersFavorite?.adapter = listUserAdapter
         listUserAdapter.setOnItemClickCallback(object : UserListAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: UserDetail) {
+            override fun onItemClicked(data: User) {
                getDetail(data)
             }
         })
@@ -134,7 +143,7 @@ class FavoriteActivity : AppCompatActivity() {
     }
 
     private fun showSnackbarMessage(message: String) {
-        Snackbar.make(rvUsers, message, Snackbar.LENGTH_SHORT).show()
+        binding?.rvUsersFavorite?.let { Snackbar.make(it, message, Snackbar.LENGTH_SHORT).show() }
     }
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
