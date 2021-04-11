@@ -24,4 +24,7 @@
     <string name="search_hint">Find user...</string>
     <string name="intro">Find github user here!</string>
     <string name="favorite">favorite</string>
+    <string name="change_alarm">activate alarm</string>
+    <string name="change_alarm_deactive">deactivate alarm</string>
+    <string name="settings">settings</string>
 </resources>

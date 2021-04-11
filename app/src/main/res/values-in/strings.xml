@@ -22,5 +22,8 @@
     <string name="change_language_settings">ganti bahasa</string>
     <string name="search">cari</string>
     <string name="search_hint">Cari pengguna...</string>
+    <string name="change_alarm">nyalakan alarm</string>
+    <string name="change_alarm_deactive">matikan alarm</string>
     <string name="intro">Cari pengguna github disini!</string>
+    <string name="settings">pengaturan</string>
 </resources>

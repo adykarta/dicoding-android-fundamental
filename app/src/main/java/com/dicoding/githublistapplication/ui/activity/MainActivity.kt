@@ -25,6 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
+
     private var binding: ActivityMainBinding? = null
     private var list: ArrayList<User> = arrayListOf()
     private val retrofit = Retrofit.Builder()
@@ -168,9 +169,18 @@ class MainActivity : AppCompatActivity() {
         else if(item.itemId == R.id.favorite_menu){
             val moveIntent = Intent(this@MainActivity, FavoriteActivity::class.java)
             startActivity(moveIntent)
+        }
+
+        else if(item.itemId == R.id.settings){
+            val moveIntent = Intent(this@MainActivity, SettingsActivity::class.java)
+            startActivity(moveIntent)
 
         }
         return super.onOptionsItemSelected(item)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 
 

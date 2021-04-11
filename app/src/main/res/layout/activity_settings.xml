@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9CFFFFFF"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".ui.activity.SettingsActivity">
+
+    <Button
+    android:id="@+id/btn_alarm"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:text="@string/change_alarm" />
+    <Button
+        android:id="@+id/btn_alarm_deactivate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/change_alarm_deactive" />
+
+</LinearLayout>
