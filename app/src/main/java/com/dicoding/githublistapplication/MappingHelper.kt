@@ -48,7 +48,7 @@ object MappingHelper {
         var user = User()
         favCursor?.apply {
 
-            moveToFirst()
+            while (moveToNext()) {
                 val id = getInt(getColumnIndexOrThrow(_ID))
                 val name = getString(getColumnIndexOrThrow(NAME))
                 val followers_url = getString(getColumnIndexOrThrow(FOLLOWERS_URL))
@@ -69,7 +69,7 @@ object MappingHelper {
                     login,
                     favorite = favorite == "ya"
                 )
-
+            }
         }
         return user
 
