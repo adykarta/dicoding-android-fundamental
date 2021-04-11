@@ -14,9 +14,9 @@ import com.dicoding.githublistapplication.model.User
 
 object MappingHelper {
 
-    fun mapCursorToArrayList(notesCursor: Cursor?): ArrayList<User> {
+    fun mapCursorToArrayList(favCursor: Cursor?): ArrayList<User> {
         val notesList = ArrayList<User>()
-        notesCursor?.apply {
+        favCursor?.apply {
             while (moveToNext()) {
                 val id = getInt(getColumnIndexOrThrow(_ID))
                 val name = getString(getColumnIndexOrThrow(NAME))
@@ -44,10 +44,11 @@ object MappingHelper {
         }
         return notesList
     }
-    fun mapCursorToUserObject(notesCursor: Cursor?): User {
+    fun mapCursorToUserObject(favCursor: Cursor?): User {
         var user = User()
-        notesCursor?.apply {
-            while (moveToNext()) {
+        favCursor?.apply {
+
+            moveToFirst()
                 val id = getInt(getColumnIndexOrThrow(_ID))
                 val name = getString(getColumnIndexOrThrow(NAME))
                 val followers_url = getString(getColumnIndexOrThrow(FOLLOWERS_URL))
@@ -68,7 +69,7 @@ object MappingHelper {
                     login,
                     favorite = favorite == "ya"
                 )
-            }
+
         }
         return user
 

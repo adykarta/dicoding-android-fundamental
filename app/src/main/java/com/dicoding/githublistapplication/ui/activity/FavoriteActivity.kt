@@ -11,6 +11,7 @@ import com.dicoding.githublistapplication.*
 import com.dicoding.githublistapplication.api.UserService
 import com.dicoding.githublistapplication.dao.FavoriteHelper
 import com.dicoding.githublistapplication.databinding.ActivityFavoriteBinding
+import com.dicoding.githublistapplication.db.DatabaseContract
 import com.dicoding.githublistapplication.model.User
 import com.dicoding.githublistapplication.ui.adapter.UserListAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -72,7 +73,7 @@ class FavoriteActivity : AppCompatActivity() {
             val favoriteHelper = FavoriteHelper.getInstance(applicationContext)
             favoriteHelper.open()
             val deferredNotes = async(Dispatchers.IO) {
-                val cursor = favoriteHelper.queryAll()
+                val cursor = contentResolver.query(DatabaseContract.FavoriteColumns.CONTENT_URI, null, null, null, null)
                 MappingHelper.mapCursorToArrayList(
                     cursor
                 )

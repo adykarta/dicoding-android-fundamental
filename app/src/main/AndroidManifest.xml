@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dicoding.githublistapplication">
-
+    <permission android:name="com.dicoding.githublistapplication.WRITE_DATABASE" android:protectionLevel="normal"/>
+    <permission android:name="com.dicoding.githublistapplication.READ_DATABASE" android:protectionLevel="normal"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -11,7 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.FavoriteActivity"></activity>
+        <provider
+            android:name=".provider.FavoriteProvider"
+            android:authorities="com.dicoding.githublistapplication"
+            android:readPermission="com.dicoding.githublistapplication.READ_DATABASE"
+            android:writePermission="com.dicoding.githublistapplication.WRITE_DATABASE" />
+            android:enabled="true"
+            android:exported="true"/>
+
+        <activity android:name=".ui.activity.FavoriteActivity" />
         <activity
             android:name=".ui.activity.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
